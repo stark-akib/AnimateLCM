@@ -141,15 +141,13 @@ def resize_image(image, output_size=(1024, 576)):
 with gr.Blocks() as demo:
     gr.Markdown(
         """
-                # [AnimateLCM: Accelerating the Animation of Personalized Diffusion Models and Adapters with Decoupled Consistency Learning](https://arxiv.org/abs/2402.00769)
-                Fu-Yun Wang, Zhaoyang Huang (*Corresponding Author), Xiaoyu Shi, Weikang Bian, Guanglu Song, Yu Liu, Hongsheng Li (*Corresponding Author)<br>
-                
-                [arXiv Report](https://arxiv.org/abs/2402.00769) | [Project Page](https://animatelcm.github.io/) | [Github](https://github.com/G-U-N/AnimateLCM) | [Civitai](https://civitai.com/models/290375/animatelcm-fast-video-generation) | [Replicate](https://replicate.com/camenduru/animate-lcm)
-                
+                # Smart Animation - AnimateLCM - Nookly Demo
+                Accelerating the Animation of Personalized Diffusion Models and Adapters with Decoupled Consistency Learning](https://arxiv.org/abs/2402.00769)
+               
+            
                 Related Models:
-                [AnimateLCM-t2v](https://huggingface.co/wangfuyun/AnimateLCM): Personalized Text-to-Video Generation
                 [AnimateLCM-SVD-xt](https://huggingface.co/wangfuyun/AnimateLCM-SVD-xt): General Image-to-Video Generation
-                [AnimateLCM-i2v](https://huggingface.co/wangfuyun/AnimateLCM-I2V): Personalized Image-to-Video Generation
+                
                 """
     )
     with gr.Row():
@@ -169,11 +167,11 @@ with gr.Blocks() as demo:
             maximum=max_64_bit_int,
             step=1,
         )
-        randomize_seed = gr.Checkbox(label="Randomize seed", value=False)
+        randomize_seed = gr.Checkbox(label="Randomize seed", value=True)
         motion_bucket_id = gr.Slider(
             label="Motion bucket id",
             info="Controls how much motion to add/remove from the image",
-            value=80,
+            value=25,
             minimum=1,
             maximum=255,
         )
@@ -186,14 +184,14 @@ with gr.Blocks() as demo:
         )
         width = gr.Slider(
             label="Width of input image",
-            info="It should be divisible by 64",
+            info="It should be divisible by 64. The model currently geenrates best results at 1024 width",
             value=1024,
             minimum=576,
             maximum=2048,
         )
         height = gr.Slider(
             label="Height of input image",
-            info="It should be divisible by 64",
+            info="It should be divisible by 64. The model currently geenrates best results at 576 height",
             value=576,
             minimum=320,
             maximum=1152,
@@ -241,19 +239,6 @@ with gr.Blocks() as demo:
     )
     safetensors_dropdown.change(fn=model_select, inputs=safetensors_dropdown)
 
-    gr.Examples(
-        examples=[
-            ["test_imgs/ai-generated-8496135_1280.jpg"],
-            ["test_imgs/dog-7396912_1280.jpg"],
-            ["test_imgs/ship-7833921_1280.jpg"],
-            ["test_imgs/girl-4898696_1280.jpg"],
-            ["test_imgs/power-station-6579092_1280.jpg"]
-        ],
-        inputs=[image],
-        outputs=[video, seed],
-        fn=sample,
-        cache_examples=True,
-    )
 
 if __name__ == "__main__":
     demo.queue(max_size=20, api_open=False)
